@@ -10,7 +10,6 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @RestController
 public class SseController {
