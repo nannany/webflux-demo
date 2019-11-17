@@ -10,13 +10,10 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Random;
+import java.time.LocalTime;
 
 @RestController
 public class SseController {
-
-    private static Gson gson = new Gson();
-    private static Random random = new Random();
 
     @GetMapping("/stream-sse")
     public Flux<ServerSentEvent<String>> streamEvents() {
@@ -38,32 +35,10 @@ public class SseController {
     }
 
     private String getDateJsonData() {
+        Gson gson = new Gson();
         LocalDateTime ldt = LocalDateTime.now();
         TimeData td = new TimeData(ldt.getYear(), ldt.getMonthValue(), ldt.getDayOfMonth(), ldt.toLocalTime().toString());
         return gson.toJson(td);
     }
-
-    @GetMapping("/notification/events")
-    public Flux<ServerSentEvent<String>> streamPlaceEvents() {
-        return Flux.interval(Duration.ofSeconds(1))
-                .map(sequence -> ServerSentEvent.<String>builder()
-                        .id(String.valueOf(sequence))
-                        .event("receive/roboticbase-event")
-                        .data(getPlaceJsonData())
-                        .build());
-    }
-
-    private String getPlaceJsonData() {
-        return gson.toJson(new PlaceData(random.nextInt(200), random.nextInt(200), random.nextInt(3)));
-    }
-
-    @AllArgsConstructor
-    @Data
-    private class PlaceData {
-        private Integer x;
-        private Integer y;
-        private Integer guard_mode;
-    }
-
 }
 
